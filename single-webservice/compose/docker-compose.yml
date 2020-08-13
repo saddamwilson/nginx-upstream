@@ -1,0 +1,21 @@
+version: '2' # compose file的版本,推荐2
+
+services:
+  web: # 定义service
+    image: iregistry.iauto.com/ci_members/dockerimages/node:12.13.0-stretch-slim # 设置镜像来源
+    volumes: # 设置挂载路径
+      - ../node:/usr/src/app # 这个路径请参考前面的目录结构
+    working_dir: /usr/src/app
+    command: 
+      - /bin/sh
+      - -c
+      - |
+        node http.js
+  proxy:
+    image: iregistry.iauto.com/ci_members/dockerimages/nginx:1.16.0
+    volumes:
+      - ../nginx:/etc/nginx
+    ports:
+     - "4000:5000" # 设置端口连接
+    links:
+      - web # 建立连接,web容器就无需暴露端口出去
